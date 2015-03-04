@@ -1,0 +1,23 @@
+
+/* custom css */
+
+.site-content {
+  padding-top: 25px;
+}
+.navbar-brand {
+	padding: px
+}
+.label {
+	text-align: right
+}
+.error {
+	color: red
+}
+.btn {
+	margin-bottom: 5px
+}
+th {
+	background: lightblue; 
+	border-color: black; 
+	text-align: left;
+}

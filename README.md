@@ -1,1 +1,5 @@
-# srx-report
+
+TO RUN: 
+% ./app.py
+
+

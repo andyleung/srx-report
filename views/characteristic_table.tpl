@@ -16,7 +16,7 @@
 <table>
   <tr>
     <td>
-      <form action="/ag_char_bar_chart">
+      <form action="/ag_characteristic_bar_chart">
           <input type="submit" value="Bar Chart">
       </form>
     </td>

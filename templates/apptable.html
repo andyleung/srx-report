@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+  <head>
+    <title>Application Statistics</title>
+  </head>
+
+<div class="container body-content">
+<h1>Application Statistics</h1>
+<body>
+<!-- button for session sorting -->
+    <button onclick="location.href = '/report_apps';" class="btn btn-primary" >By Apps</button>
+    <button onclick="location.href = '/report_sessions';" class="btn btn-success" >By Sessions</button>
+    <button onclick="location.href = '/report_kbytes';" class="btn btn-info" >By Kbytes</button>
+    <button onclick="location.href = '/report_risk';" class="btn btn-danger" >By Risk</button>
+    <br>
+<!-- Generate a HTML table from a list of tuples (or list of lists, or tuple of tuples or ...) -->
+<table class="table table-bordered table-condensed table-hover">
+  <tr>
+    <th>Applications</th><th>Sessions</th><th>KBytes</th><th>Risk</th><th>Categories</th><th>Subcategories</th><th>Encrypted</th>
+  </tr>
+{% for row in rows %}
+  <tr>
+<!--   %for col in row: -->
+    <th>{{row['name']}}</th><td>{{row['sessions']}}</td><td>{{row['bytes']}}</td><td>{{row['risk']}}</td><td>{{row['category']}}</td><td>{{row['subcategory']}}</td><td>{{row['is_encrypted']}}</td>
+{% endfor %}
+  </tr>
+</table>
+
+</body>
+</div>
+
+{% endblock %}

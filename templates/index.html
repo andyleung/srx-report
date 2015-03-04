@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+	.container {
+		max-width: 500px;
+		padding-top: 30px;
+	}
+	input {
+		max-width: 200px;
+	}
+</style>
+
+<div class="container">
+  <h1>Retrieve SRX App Data</h1>
+    <form role="form" method="post" padding-bottom: 10px >
+        <div class="form-group">
+            <input type="text" class="form-control" name="hostname" placeholder="Enter Hostname" required>
+            <input type="text" class="form-control" name="user" placeholder="Enter Login" required>
+            <input type="password" class="form-control" name="password" placeholder="Enter Password" required>
+        </div>
+        <button type="submit" class="btn btn-default">Submit</button>
+    </form>
+</div>
+
+{% endblock %}

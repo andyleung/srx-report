@@ -4,6 +4,9 @@ import pymongo
 import sys
 import json
 import xml.etree.ElementTree as ET
+from lxml import etree
+from jnpr.junos import Device
+
 
 def get_db():
     try:
@@ -15,10 +18,16 @@ def get_db():
     
 
 def insertdb(db):
-   tree = ET.parse('signatures.xml')
-   root = tree.getroot()
+   dev = Device('172.27.62.23',user='lab',password='lab123') 
+   ##dev.timeout = 300
+   dev.open()
+   print "Opening Device ... "
+   root = dev.rpc.get_appid_application_signature_detail(dev_timeout=300)
+   print "Finish getting signatures"
+   dev.close()
+
    count = 0
-   for sig in root.findall('application-signature-detail'):
+   for sig in root.findall('.//application-signature-detail'):
          data={'characteristic':[],'ports':[],'alias':[]}
          data['name'] = sig.find('application-signature-detail-header/application-name').text
          data['type']= data['name'][6:]
@@ -66,6 +75,9 @@ def insertdb(db):
                      
 if __name__ == "__main__":
     db = get_db()
+    db.signatures.drop()
     insertdb(db)
-
+    num = db.signatures.find().count()
+    print "Total signatures: ", num
+    
 

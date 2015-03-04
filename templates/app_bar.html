@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+
+<html>
+<head>
+  <script src="http://d3js.org/d3.v3.min.js"></script>
+  <script src="http://dimplejs.org/dist/dimple.v2.1.2.min.js"></script>
+  <script type="text/javascript">
+    function draw(data){
+      var svg = dimple.newSvg("body",900,900);
+      var chart = new dimple.chart(svg, data);
+      //chart.x = 200;
+      chart.ease = "elastic";
+      chart.setBounds(200, 30, 510, 330)
+      chart.addCategoryAxis("y", "_id");
+      chart.addMeasureAxis("x", "count");
+      chart.addSeries("Volume", dimple.plot.bar);
+      chart.addLegend(65, 10, 510, 20, "right");
+      chart.draw();
+    };
+  </script>
+</head>
+<h2 class="row"> Top 15 application by Volume </h2>
+<body>
+<div id='chartContainer'>
+  <script type="text/javascript">
+    d3.json("/app_data/15", draw);
+  </script>
+</div>
+</body>
+</html>
+
+{% endblock %}
+

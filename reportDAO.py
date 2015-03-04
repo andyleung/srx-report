@@ -40,8 +40,8 @@ class ReportDAO:
         self.db = database
         # if collection_name already in database.collection_names(), drop it
         if database.report:
-            print "Data already exist. Clearing old data."
-            database.report.drop()
+             print "Data already exist. Clearing old data."
+             database.report.drop()
         self.report = database.report
         self.signatures = database.signatures
 
@@ -56,8 +56,9 @@ class ReportDAO:
         appgroup_list = apps.findall('appid-application-statistics/application-name')
         sessions_list = apps.findall('appid-application-statistics/sessions')
         kbyte_list = apps.findall('appid-application-statistics/bytes')
+        is_encrypted_list = apps.findall('appid-application-statistics/is_encrypted')
 
-        for app,session,byte in zip(appgroup_list,sessions_list,kbyte_list):
+        for app,session,byte,is_encrypted in zip(appgroup_list,sessions_list,kbyte_list,is_encrypted_list):
  
             each_app = normalize(app.text)
 
@@ -77,7 +78,8 @@ class ReportDAO:
                          "subcategory": subcategory, 
                          "risk": int(risk),
                          "characteristic": characteristic,
-                         "ports": ports
+                         "ports": ports,
+                         "is_encrypted": is_encrypted.text
                         }
 
             # Now insert the post
@@ -91,16 +93,16 @@ class ReportDAO:
         return True
     
     def sort_by_kbytes(self):
-        return self.report.find({},{"_id":0,"name":1,"sessions":1,"bytes":1,"risk":1,"category":1,"subcategory":1}).sort("bytes",-1)
+        return self.report.find({},{"_id":0,"name":1,"sessions":1,"bytes":1,"risk":1,"category":1,"subcategory":1,"is_encrypted":1}).sort("bytes",-1)
 
     def sort_by_sessions(self):
-        return self.report.find({},{"_id":0,"name":1,"sessions":1,"bytes":1,"risk":1,"category":1,"subcategory":1}).sort("sessions",-1)
+        return self.report.find({},{"_id":0,"name":1,"sessions":1,"bytes":1,"risk":1,"category":1,"subcategory":1,"is_encrypted":1}).sort("sessions",-1)
 
     def sort_by_apps(self):
-        return self.report.find({},{"_id":0,"name":1,"sessions":1,"bytes":1,"risk":1,"category":1,"subcategory":1}).sort("name",1)
+        return self.report.find({},{"_id":0,"name":1,"sessions":1,"bytes":1,"risk":1,"category":1,"subcategory":1,"is_encrypted":1}).sort("name",1)
 
     def sort_by_risk(self):
-        return self.report.find({},{"_id":0,"name":1,"sessions":1,"bytes":1,"risk":1,"category":1,"subcategory":1}).sort("risk",1)
+        return self.report.find({},{"_id":0,"name":1,"sessions":1,"bytes":1,"risk":1,"category":1,"subcategory":1,"is_encrypted":1}).sort("risk",1)
 
     def sort_by_characteristic(self):
         character_dict = {'Known Vulnerabilities':0,'Can Leak Information':0,
@@ -112,8 +114,28 @@ class ReportDAO:
         return cursor
 
     def sort_by_subcategory(self):
-        
         cursor = self.report.aggregate([{"$group":{"_id":"$subcategory",
               "app_count":{"$sum":1},"Sessions":{"$sum":"$sessions"},
               "Bytes":{"$sum":"$bytes"}}}])
         return cursor
+
+    def sort_by_category(self):
+        cursor = self.report.aggregate([{"$group":{"_id":"$category",
+              "app_count":{"$sum":1},"Sessions":{"$sum":"$sessions"},
+              "Bytes":{"$sum":"$bytes"}}}])
+        return cursor
+    
+    def group_apps(self, limit):
+        if limit > 0 :
+            return (self.report.aggregate([
+                {"$group":{"_id":"$name","count":{"$sum":"$bytes"}}},{"$sort":{"count":-1}},{"$limit": limit}])
+                  )
+        return (self.report.aggregate([
+                {"$group":{"_id":"$name","count":{"$sum":"$bytes"}}},{"$sort":{"count":-1}}])
+                  )
+
+    def bubble_apps(self):
+        cursor = self.report.aggregate([
+                {"$group":{"_id":"$name","count":{"$sum":"$bytes"},"main_group":{"$addToSet":"$category"}}}])
+        return cursor
+        

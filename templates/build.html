@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block title %}
+      <h1>Build Signature Database</h1>
+{% endblock %}
+{% block content %}
+
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+	.container {
+		max-width: 500px;
+		padding-top: 30px;
+	}
+	input {
+		max-width: 200px;
+	}
+    </style>
+  </head>
+
+  <div class="container body-content">
+      <h1>Build A New Signature Database</h1>
+        <form role="form" method="post" padding-bottom: 10px >
+            <div class="form-group">
+                <input type="text" class="form-control" name="hostname" placeholder="Enter Hostname" required>
+                <input type="text" class="form-control" name="user" placeholder="Enter Login" required>
+                <input type="text" class="form-control" name="password" placeholder="Enter Password" required>
+            </div>
+            <button type="submit" class="btn btn-default">Submit</button>
+        </form>
+  </div>
+
+
+
+{% endblock %}
