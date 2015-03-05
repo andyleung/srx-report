@@ -7,21 +7,22 @@
   <script src="http://dimplejs.org/dist/dimple.v2.1.2.min.js"></script>
   <script type="text/javascript">
     function draw(data) {
-    var svg = dimple.newSvg("#chartContainer", 650, 400);
+    var svg = dimple.newSvg("#chartContainer", 700, 450);
     var myChart = new dimple.chart(svg, data);
-      myChart.setBounds(20, 20, 460, 360)
-      myChart.addMeasureAxis("p", "count");
+      myChart.setBounds(0, 20, "85%", "85%")
+      myChart.addMeasureAxis("p", "app_count");
       myChart.addSeries("_id", dimple.plot.pie);
-      myChart.addLegend(500, 20, 200, 300, "left");
+    var myLegend = myChart.addLegend(500, 20, 200, 300, "left");
+      myLegend.fontSize = "12px"
       myChart.draw();
     };
   </script>
 </head>
-<h2> Applications by Volume</h2>
+<h2> Application Characteristics </h2>
 <body>
 <div id="chartContainer">
   <script type="text/javascript">
-    d3.json("/app_data/0", draw);
+    d3.json("/subcategory_data", draw);
   </script>
 </div>
 </body>

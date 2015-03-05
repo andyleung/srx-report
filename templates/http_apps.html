@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<style type="text/css">
+  th {
+     background: pink; 
+     border-color: black; 
+     text-align: left;
+  };
+</style>
+
+  <head>
+    <title>Application that use web protocols</title>
+  </head>
+
+<div class="container body-content">
+<h1>WEB Applications</h1>
+<body>
+<!-- Generate a HTML table from a list of tuples (or list of lists, or tuple of tuples or ...) -->
+<table style="width: auto;" class="table table-bordered table-condensed table-hover table-striped">
+  <tr >
+    <th>Applications</th>
+    <th>Sessions</th>
+    <th>KBytes</th>
+    <th>Categories</th>
+    <th>Encrypted</th>
+  </tr>
+{% for row in rows %}
+  <tr>
+<!--   %for col in row: -->
+    <th>{{row['name']}}</th><td>{{row['sessions']}}</td><td>{{row['bytes']}}</td><td>{{row['category']}}</td><td>{{row['is_encrypted']}}</td>
+{% endfor %}
+  </tr>
+</table>
+
+</body>
+</div>
+
+{% endblock %}

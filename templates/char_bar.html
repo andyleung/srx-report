@@ -1,32 +1,35 @@
 {% extends "base.html" %}
 {% block content %}
 
-<html>
 <head>
   <script src="http://d3js.org/d3.v3.min.js"></script>
   <script src="http://dimplejs.org/dist/dimple.v2.1.2.min.js"></script>
   <script type="text/javascript">
     function draw(data){
-      var svg = dimple.newSvg("body",650,400);
+      var svg = dimple.newSvg("body",800,400);
       var chart = new dimple.chart(svg, data);
-      chart.x = 200;
+      chart.setBounds(200,25,"80%","80%")
+      //chart.x = 200;
       chart.ease = "elastic";
-      chart.addCategoryAxis("y", "_id");
+      var myAxis = chart.addCategoryAxis("y", "_id");
+      myAxis.fontSize = "15px"
       chart.addMeasureAxis("x", "count");
+      chart.addColorAxis("count",['#B58929','#C61C6F','#268BD2','#85992C'])
       chart.addSeries(null, dimple.plot.bar);
       chart.draw();
     };
   </script>
 </head>
+
+
 <h2 class="row"> Application Characteristics</h2>
-<body>
+
 <div id='chartContainer'>
   <script type="text/javascript">
     d3.json("/char_data", draw);
   </script>
 </div>
-</body>
-</html>
+
 
 {% endblock %}
 

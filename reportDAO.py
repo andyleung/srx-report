@@ -39,20 +39,20 @@ class ReportDAO:
     def __init__(self, database):
         self.db = database
         # if collection_name already in database.collection_names(), drop it
-        if database.report:
-             print "Data already exist. Clearing old data."
-             database.report.drop()
+        # if database.report:
+        #      print "Data already exist. Clearing old data."
+        #      database.report.drop()
+        # else:
+        #      print "Data does not exist. Building new table..."
         self.report = database.report
         self.signatures = database.signatures
-
-# else:
-#      print "Data does not exist. Building new table..."
 
     ## Get the rest of the attribute from db.signatures collection
 
     # inserts the blog entry and returns a permalink for the entry
     def insert_entry(self, apps):
         last_reset_date = apps[0][0].text
+        print last_reset_date
         appgroup_list = apps.findall('appid-application-statistics/application-name')
         sessions_list = apps.findall('appid-application-statistics/sessions')
         kbyte_list = apps.findall('appid-application-statistics/bytes')
@@ -61,10 +61,9 @@ class ReportDAO:
         for app,session,byte,is_encrypted in zip(appgroup_list,sessions_list,kbyte_list,is_encrypted_list):
  
             each_app = normalize(app.text)
-
             cursor = self.signatures.find_one({"type":each_app})
-            print "App: ", each_app
-            print "Cursor: ",cursor
+            # print "App: ", each_app
+            # print "Cursor: ",cursor
             risk = cursor['risk']
             category = cursor['category']
             subcategory = cursor['subcategory']
@@ -85,7 +84,7 @@ class ReportDAO:
             # Now insert the post
             try:
                 self.report.insert(entry)
-                print "Inserting successful ..."
+                ## print "Insert successful ..."
             except:
                 print "Error inserting entry"
                 print "Unexpected error:", sys.exc_info()[0]
@@ -138,4 +137,10 @@ class ReportDAO:
         cursor = self.report.aggregate([
                 {"$group":{"_id":"$name","count":{"$sum":"$bytes"},"main_group":{"$addToSet":"$category"}}}])
         return cursor
+
+    def http_apps(self):
+        cursor = self.report.find({'ports':{'$in':["SSL","HTTPS","HTTP"]}})
+        return cursor
+        
+
         

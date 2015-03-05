@@ -7,24 +7,30 @@
   <script src="http://dimplejs.org/dist/dimple.v2.1.2.min.js"></script>
   <script type="text/javascript">
     function draw(data){
-      var svg = dimple.newSvg("body",900,900);
+      var svg = dimple.newSvg("body",900,400);
       var chart = new dimple.chart(svg, data);
       //chart.x = 200;
       chart.ease = "elastic";
-      chart.setBounds(200, 30, 510, 330)
+      chart.setBounds(200, 30, "85%", "85%")
       chart.addCategoryAxis("y", "_id");
       chart.addMeasureAxis("x", "count");
+      chart.addColorAxis("count",['#B58929','#C61C6F','#268BD2','#85992C'])
       chart.addSeries("Volume", dimple.plot.bar);
       chart.addLegend(65, 10, 510, 20, "right");
       chart.draw();
     };
   </script>
 </head>
-<h2 class="row"> Top 15 application by Volume </h2>
+<h2 class="row"> Top {{app_num}} Application by Volume </h2>
 <body>
+<form role="form" method="POST">
+   Number of Apps:<br>
+   <input type="number" name="num" placeholder="# of applications" >
+   <input type="submit" value="Submit">
+</form> 
 <div id='chartContainer'>
   <script type="text/javascript">
-    d3.json("/app_data/15", draw);
+    d3.json("/app_data/{{app_num}}", draw);
   </script>
 </div>
 </body>

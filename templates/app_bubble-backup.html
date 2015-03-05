@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+text {
+  font: 10px sans-serif;
+}
+</style>
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="http://code.jquery.com/jquery-1.11.2.min.js" type="text/javascript"></script>
+    <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="http://d3js.org/d3.v3.min.js"></script>
+  </head>
+    <title>Applications Bubble Visualizer</title>
+    <h2>Applications Bubble Visualizer</h2>
+  <body>
+    <div class="container">
+      <div id="chart"></div>
+    </div>
+    <script src={{ url_for('static', filename='main.js') }}></script>
+  </body>
+</html>
+
+{% endblock %}
