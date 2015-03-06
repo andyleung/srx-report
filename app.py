@@ -117,7 +117,7 @@ def build():
              database.signatures.insert(data)
       print "Insert to MongoDB ... done"
       flash ("Building signatures database ... done")
-      return render_template('index.html')
+      return render_template('build.html')
   return render_template('build.html')
 
 @app.route('/report_sessions')
@@ -274,5 +274,8 @@ def http_apps():
     return render_template('http_apps.html',rows=rows)
 
 if __name__ == '__main__':
-	app.run(debug=True)
+	app.run(
+           host='0.0.0.0',
+           port=5000,
+           debug=True)
 
