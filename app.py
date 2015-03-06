@@ -26,15 +26,18 @@ def read_device(hostname, username, passwd, code):
     
     ### Read application group data from SRX
     ### lab@srx2> show services application-identification statistics applications 
-    if code == 'status':    
+    if code == 'status': 
+         print "Getting status ..."   
          apps = dev.rpc.get_appid_application_statistics()
          apps_groups = dev.rpc.get_appid_application_group_statistics()
-    else:
+    elif code == 'signatures':
          print "Getting signatures ..."
          root = dev.rpc.get_appid_application_signature_detail(dev_timeout=300)
          print "Finish getting signatures ..."
          dev.close()
          return root     
+    else:
+         print "Device Error"
     print "Closing device ... "
     dev.close()
 
@@ -54,7 +57,7 @@ def present_get_input():
 		username = request.form['user']
 		passwd = request.form['password']
 
-		read_device(hostname='172.27.62.23',username='lab',passwd='lab123',code='status')
+		read_device(hostname,username,passwd,code='status')
 
 		cursor = report.sort_by_kbytes()
 		sort_by_kbytes = []
@@ -68,9 +71,9 @@ def present_get_input():
 def build():
   if request.method == 'POST':
       hostname = request.form['hostname']
-      user = request.form['user']
+      username = request.form['user']
       password = request.form['password']
-      root = read_device(hostname,username,password,code='signature')
+      root = read_device(hostname,username,password,code='signatures')
       count = 0
       database.signatures.drop()
       for sig in root.findall('.//application-signature-detail'):
@@ -213,7 +216,7 @@ def data():
                 'value': log(i['count']),
                 'group': i['main_group'][0]
         })
-    print RESULTS
+    #print RESULTS
     return jsonify(RESULTS)
 
 
@@ -260,7 +263,7 @@ def http_apps():
     cursor = report.http_apps()
     rows = []
     for i in cursor:
-        print "This app: ",i
+        ## print "This app: ",i
         rows.append({
             "name" : i['name'],
             "sessions": i['sessions'],
