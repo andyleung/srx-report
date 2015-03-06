@@ -18,18 +18,25 @@ collection_name = 'report'
 
 report = reportDAO.ReportDAO(database)
 
-def read_device(hostname, username, passwd):         
+def read_device(hostname, username, passwd, code):         
     dev = Device(hostname,user=username,password=passwd)
     dev.open()
     print "Login successful ..."
     ##print (dev.facts)
     
     ### Read application group data from SRX
-    ### lab@srx2> show services application-identification statistics applications     
-    apps = dev.rpc.get_appid_application_statistics()
-    apps_groups = dev.rpc.get_appid_application_group_statistics()
-    dev.close()
+    ### lab@srx2> show services application-identification statistics applications 
+    if code == 'status':    
+         apps = dev.rpc.get_appid_application_statistics()
+         apps_groups = dev.rpc.get_appid_application_group_statistics()
+    else:
+         print "Getting signatures ..."
+         root = dev.rpc.get_appid_application_signature_detail(dev_timeout=300)
+         print "Finish getting signatures ..."
+         dev.close()
+         return root     
     print "Closing device ... "
+    dev.close()
 
     if database.report:
          print "Data already exist. Clearing old data."
@@ -47,7 +54,7 @@ def present_get_input():
 		username = request.form['user']
 		passwd = request.form['password']
 
-		read_device(hostname='172.27.62.23',username='lab',passwd='lab123')
+		read_device(hostname='172.27.62.23',username='lab',passwd='lab123',code='status')
 
 		cursor = report.sort_by_kbytes()
 		sort_by_kbytes = []
@@ -56,6 +63,59 @@ def present_get_input():
 		  sort_by_kbytes.append(i)
 		return render_template('apptable.html',rows=sort_by_kbytes)
 	return render_template("index.html")
+
+@app.route("/build",methods=['GET','POST'])
+def build():
+  if request.method == 'POST':
+      hostname = request.form['hostname']
+      user = request.form['user']
+      password = request.form['password']
+      root = read_device(hostname,username,password,code='signature')
+      count = 0
+      database.signatures.drop()
+      for sig in root.findall('.//application-signature-detail'):
+             data={'characteristic':[],'ports':[],'alias':[]}
+             data['name'] = sig.find('application-signature-detail-header/application-name').text
+             data['type']= data['name'][6:]
+             data['description'] = sig.find('application-signature-detail-header/application-description').text
+             data['app-id'] = int(sig.find('application-signature-detail-header/application-id').text)
+
+             data['risk'] = ""
+             data['category'] = ""
+             data['subcategory'] = "" 
+             for tags in sig.findall('application-signature-detail-header/application-tag-list/application-tag'):
+                 
+                 tag = tags.find('application-tag-name').text
+                 value = tags.find('application-tag-value').text
+                 #print "tag: ", tag, "value: ", value
+                 if tag == 'risk':
+                    data['risk'] = int(value)
+                 elif tag == 'subcategory':
+                    data['subcategory'] = value
+                 elif tag == 'category':
+                    data['category'] = value
+                 elif tag == 'characteristic':
+                  data['characteristic'].append(value)
+             
+             ## List of the ports is different from above. So treat it special.
+             ports = sig.find('application-signature-detail-header/application-over-list')
+             if ports is not None:
+                 for port in ports.iter('application-app-name'):
+                    #print "Ports: ", port.text
+                    data['ports'].append(port.text)
+
+             aliases = sig.find('application-signature-detail-header/application-alias-list')
+             if aliases is not None:
+                  for alias in aliases.iter('application-alias-name'):
+                     #print "Alias: ", alias.text
+                     data['alias'].append(alias.text)
+
+             #Finally, insert into the mongodb
+             database.signatures.insert(data)
+      print "Insert to MongoDB ... done"
+      flash ("Building signatures database ... done")
+      return render_template('index.html')
+  return render_template('build.html')
 
 @app.route('/report_sessions')
 def present_sessions():
@@ -84,6 +144,7 @@ def present_kbytes():
       sort_by_kbytes.append(i)    
     return render_template('apptable.html',rows=sort_by_kbytes) 
 
+
 @app.route('/report_risk')
 def present_risks():
     cursor = report.sort_by_risk()
@@ -92,16 +153,6 @@ def present_risks():
       #print i
       sort_by_risk.append(i)    
     return render_template('apptable.html',rows=sort_by_risk)
-
-@app.route("/build",methods=['GET','POST'])
-def build():
-  if request.method == 'POST':
-    hostname = request.form['hostname']
-    user = request.form['user']
-    password = request.form['password']
-    flash("INPUT SUBMITTED!")
-    return render_template('build.html')
-  return render_template('build.html')
 
 @app.route('/char_bar')
 def char_bar():

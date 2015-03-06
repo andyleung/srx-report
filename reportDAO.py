@@ -62,8 +62,8 @@ class ReportDAO:
  
             each_app = normalize(app.text)
             cursor = self.signatures.find_one({"type":each_app})
-            # print "App: ", each_app
-            # print "Cursor: ",cursor
+            print "App: ", each_app
+            print "Cursor: ",cursor
             risk = cursor['risk']
             category = cursor['category']
             subcategory = cursor['subcategory']

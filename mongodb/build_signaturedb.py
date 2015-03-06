@@ -17,13 +17,13 @@ def get_db():
         print "Could not connect to MongoDB: %s" % e 
     
 
-def insertdb(db):
-   dev = Device('172.27.62.23',user='lab',password='lab123') 
-   ##dev.timeout = 300
+def insertdb(db,host,user,password):
+   dev = Device(host='172.27.62.23',user='lab',password='lab123') 
    dev.open()
    print "Opening Device ... "
+   ##dev.timeout = 300
    root = dev.rpc.get_appid_application_signature_detail(dev_timeout=300)
-   print "Finish getting signatures"
+   flash("Finish getting signatures")
    dev.close()
 
    count = 0
