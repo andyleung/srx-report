@@ -273,6 +273,90 @@ def http_apps():
             })
     return render_template('http_apps.html',rows=rows)
 
+@app.route('/app_groups_data')
+def app_groups_data():
+    mydata = {
+"name": "Junos",
+"parent": "null",
+"children": [
+    {
+    "name": "web",
+    "parent": "Top Level",
+    "children": [
+        {
+        "name": "advertisments",
+        "parent": "Level 2"
+        },
+        {
+        "name": "blogging",
+        "parent": "Level 2"
+        },
+        {
+        "name": "cdn",
+        "parent": "Level 2"
+        },
+        {
+        "name": "file-sharing",
+        "parent": "Level 2"
+        },
+        {
+        "name": "social-networking",
+        "parent": "Level 2",
+        "children":[
+                    {"name": "facebook",
+                     "parent": "Level 3"
+                    },
+                    {"name": "linkedin",
+                     "parent": "Level 3"
+                    },
+        ]
+        }
+    ]
+    },
+    {
+    "name": "Infrastructure",
+    "parent": "Top Level",
+    "children": [
+                    {"name": "directory",
+                     "parent": "Level 3"
+                    },
+                    {"name": "encryption",
+                     "parent": "Level 3"
+                    },
+                    {"name": "networking",
+                     "parent": "Level 3"
+                    },
+                    {"name": "rpc",
+                     "parent": "Level 3"
+                    },
+    ]
+    },
+    {
+    "name": "p2p",
+    "parent": "Top Level",
+    "children": [
+                    {"name": "file-sharing",
+                     "parent": "Level 3"
+                    }
+    ]
+    },
+    {
+    "name": "remote-Access",
+    "parent": "Top Level",
+    "children": [
+                    {"name": "command",
+                     "parent": "Level 3"
+                    }
+    ]
+    },
+ ]}
+    return json.dumps(mydata)
+
+@app.route('/app_groups')
+def app_groups():
+        return render_template('app_groups.html')
+
+
 if __name__ == '__main__':
 	app.run(
            host='0.0.0.0',
