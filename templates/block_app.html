@@ -3,11 +3,11 @@
 {% block content %}
 
 <head>
-    <title>Application Statistics</title>
+    <title>Application Firewall Policy</title>
 </head>
 
 <div class="container body-content">
-<h1>Application Statistics</h1>
+<h1>Create App FW Policy</h1>
 <body>
 <!-- button for session sorting -->
     <button onclick="location.href = '/report_apps';" class="btn btn-primary" >By Apps</button>
@@ -17,20 +17,20 @@
     <br>
 <!-- Generate a HTML table from a list of tuples (or list of lists, or tuple of tuples or ...) -->
 
-<form action="/block_apps" method="post">
+<p>Build FW policy to block these applications<p>
+<br>
 <table style="width: auto;" class="table table-bordered table-condensed table-hover table-striped">
   <tr>
-    <th>Applications</th><th>Sessions</th><th>KBytes</th><th>Risk</th><th>Categories</th><th>Subcategories</th><th>Encrypted</th>
+    <th>Applications</th>
   </tr>
-{% for row in rows %}
+{% for row in {{app_list}} %}
   <tr>
 <!--   %for col in row: -->
-    <th><input type="checkbox" name="block-apps" value={{row['name']}} style="margin-right: 10px">{{row['name']}}</th><td>{{row['sessions']}}</td><td>{{row['bytes']}}</td><td>{{row['risk']}}</td><td>{{row['category']}}</td><td>{{row['subcategory']}}</td><td>{{row['is_encrypted']}}</td>
+    <td>{{row['name']}}</td>
 {% endfor %}
   </tr>
 </table>
-  <input value="Block Apps" type="submit" />
-</form>
+
 </body>
 </div>
 

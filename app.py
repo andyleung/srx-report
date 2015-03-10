@@ -275,86 +275,86 @@ def http_apps():
 
 @app.route('/app_groups_data')
 def app_groups_data():
-    mydata = {
-"name": "Junos",
-"parent": "null",
-"children": [
-    {
-    "name": "web",
-    "parent": "Top Level",
+    mydata2 = {
+    "name": "Root", 
     "children": [
         {
-        "name": "advertisments",
-        "parent": "Level 2"
-        },
-        {
-        "name": "blogging",
-        "parent": "Level 2"
-        },
-        {
-        "name": "cdn",
-        "parent": "Level 2"
-        },
-        {
-        "name": "file-sharing",
-        "parent": "Level 2"
-        },
-        {
-        "name": "social-networking",
-        "parent": "Level 2",
-        "children":[
-                    {"name": "facebook",
-                     "parent": "Level 3"
-                    },
-                    {"name": "linkedin",
-                     "parent": "Level 3"
-                    },
-        ]
+            "name": "junos", 
+            "children": [
+                {
+                    "name": "infrastructure", 
+                    "children": [
+                        {
+                            "name": "directory"
+                        }, 
+                        {
+                            "name": "networking"
+                        }, 
+                        {
+                            "name": "encryption"
+                        }
+                    ]
+                }, 
+                {
+                    "name": "p2p", 
+                    "children": [
+                        {
+                            "name": "file-sharing"
+                        }
+                    ]
+                }, 
+                {
+                    "name": "remote-access", 
+                    "children": [
+                        {
+                            "name": "command"
+                        }
+                    ]
+                }, 
+                {
+                    "name": "web", 
+                    "children": [
+                        {
+                            "name": "social-networking", 
+                            "children": [
+                                {
+                                    "name": "facebook"
+                                }, 
+                                {
+                                    "name": "linkedin"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
         }
-    ]
-    },
-    {
-    "name": "Infrastructure",
-    "parent": "Top Level",
-    "children": [
-                    {"name": "directory",
-                     "parent": "Level 3"
-                    },
-                    {"name": "encryption",
-                     "parent": "Level 3"
-                    },
-                    {"name": "networking",
-                     "parent": "Level 3"
-                    },
-                    {"name": "rpc",
-                     "parent": "Level 3"
-                    },
-    ]
-    },
-    {
-    "name": "p2p",
-    "parent": "Top Level",
-    "children": [
-                    {"name": "file-sharing",
-                     "parent": "Level 3"
-                    }
-    ]
-    },
-    {
-    "name": "remote-Access",
-    "parent": "Top Level",
-    "children": [
-                    {"name": "command",
-                     "parent": "Level 3"
-                    }
-    ]
-    },
- ]}
-    return json.dumps(mydata)
+    ]}
+
+    return json.dumps(mydata2)
 
 @app.route('/app_groups')
 def app_groups():
         return render_template('app_groups.html')
+
+@app.route('/block_apps', methods=['POST'])
+def block_apps():
+        block_list = list(set(request.form.getlist('block-apps'))) 
+        policyhead = '''set security policies from-zone trust to-zone untrust policy policy1 match source-address any
+set security policies from-zone trust to-zone untrust policy policy1 match destination-address any
+set security policies from-zone trust to-zone untrust policy policy1 match application any
+set security policies from-zone untrust to-zone trust policy policy1 then permit application-services application-firewall rule-set rs1
+set security application-firewall rule-sets rs1 rule r1 match dynamic-application [ 
+'''
+
+        policytail = ''' ] 
+set security application-firewall rule-sets rs1 rule r1 then deny
+set security application-firewall rule-sets rs1 default-rule deny 
+'''
+        # p = 'hi there!'
+        # q = 'I amm fine!'
+        ##return render_template('app_groups.html')
+        return render_template('block_apps.html',block_list=block_list,policyhead=policyhead,policytail=policytail) 
 
 
 if __name__ == '__main__':

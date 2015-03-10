@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<head>
+    <title>Application Firewall Policy</title>
+</head>
+
+<div class="container body-content">
+<h2>Application FW Policy</h2>
+<body>
+
+
+<p>Create FW policy to block these applications:<p>
+<br>
+<form action="/report_apps" method="get">
+<table style="width: auto;" class="table table-bordered table-condensed table-hover table-striped">
+  <tr>
+    <th>Applications</th>
+  </tr>
+{% for row in block_list %}
+  <tr>
+<!--   %for col in row: -->
+    <td>{{ row }}</td>
+{% endfor %}
+  </tr>
+</table>
+
+<div> 
+<p>srx policy cli:</p>
+</div> 
+
+<textarea class="form-control" type="text" rows="9" >
+  {{ policyhead }}
+  {% for i in block_list %}junos:{{i}} {% endfor %} 
+  {{ policytail }} 
+</textarea> 
+<br>
+  <input value="Confirm" type="submit" />
+</form>
+
+</body>
+</div>
+
+{% endblock %}
