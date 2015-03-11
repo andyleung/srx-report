@@ -32,7 +32,7 @@ def read_device(hostname, username, passwd, code):
          apps_groups = dev.rpc.get_appid_application_group_statistics()
     elif code == 'signatures':
          print "Getting signatures ..."
-         root = dev.rpc.get_appid_application_signature_detail(dev_timeout=300)
+         root = dev.rpc.get_appid_application_signature_detail(dev_timeout=600)
          print "Finish getting signatures ..."
          dev.close()
          return root     
