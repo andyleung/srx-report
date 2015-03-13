@@ -6,9 +6,7 @@ from pprint import pprint as pp
 from math import log 
 from subprocess import call 
 import os
-import time
 import json
-import pdfkit
 import pymongo
 import reportDAO
 
