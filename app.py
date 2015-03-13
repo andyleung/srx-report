@@ -1,10 +1,14 @@
 #!/usr/bin/python
 
-from flask import Flask, render_template, request, flash, jsonify
+from flask import Flask, render_template, request, flash, jsonify, url_for
 from jnpr.junos import Device
 from pprint import pprint as pp
 from math import log 
+from subprocess import call 
+import os
+import time
 import json
+import pdfkit
 import pymongo
 import reportDAO
 
@@ -50,22 +54,27 @@ def read_device(hostname, username, passwd, code):
 
 # displays the initial form
 @app.route('/', methods=['GET','POST'])
-@app.route('/report',methods=['GET','POST'])
+##@app.route('/report',methods=['GET','POST'])
 def present_get_input():
-	if request.method == 'POST':
-		hostname = request.form['hostname']
-		username = request.form['user']
-		passwd = request.form['password']
+    browser = ''
+    browser = request.user_agent.browser
+    print "Browser: ",browser
+    if (browser == 'firefox'):
+        flash("Please use Chrome / IE / Safari for better displays")
+    if request.method == 'POST':
+        hostname = request.form['hostname']
+        username = request.form['user']
+        passwd = request.form['password']
 
-		read_device(hostname,username,passwd,code='status')
+        read_device(hostname,username,passwd,code='status')
 
-		cursor = report.sort_by_kbytes()
-		sort_by_kbytes = []
-		for i in cursor:
-		  #print i
-		  sort_by_kbytes.append(i)
-		return render_template('apptable.html',rows=sort_by_kbytes)
-	return render_template("index.html")
+        cursor = report.sort_by_kbytes()
+        sort_by_kbytes = []
+        for i in cursor:
+          #print i
+          sort_by_kbytes.append(i)
+        return render_template('apptable.html',rows=sort_by_kbytes)
+    return render_template("index.html")
 
 @app.route("/build",methods=['GET','POST'])
 def build():
@@ -351,11 +360,25 @@ set security application-firewall rule-sets rs1 rule r1 match dynamic-applicatio
 set security application-firewall rule-sets rs1 rule r1 then deny
 set security application-firewall rule-sets rs1 default-rule deny 
 '''
-        # p = 'hi there!'
-        # q = 'I amm fine!'
-        ##return render_template('app_groups.html')
         return render_template('block_apps.html',block_list=block_list,policyhead=policyhead,policytail=policytail) 
 
+@app.route('/report')
+def report_pdf():
+    # Make a PDF from another view
+    return render_template('report.html')
+
+@app.route('/build_reports', methods=['POST'])
+def build_reports():
+    reports = []
+    reports = request.form.getlist('reports') 
+    print "Get: ", reports
+    if reports:
+       # for i in reports:
+       #     LINK = "http://127.0.0.1:5000/"
+       #     call(["/usr/local/bin/wkhtmltopdf",LINK+i,"report/"+i+".pdf"])
+       flash ("Reports are stored at '/report' directory...")
+       return render_template('build_report.html',reports=reports)
+    return render_template('build_report.html',reports=reports)
 
 if __name__ == '__main__':
 	app.run(

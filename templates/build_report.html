@@ -3,7 +3,7 @@
 {% block content %}
 
 <head>
-    <title>Application Firewall Policy</title>
+    <title>Application Firewall Report</title>
 </head>
 
 <div class="container body-content">
@@ -11,14 +11,14 @@
 <body>
 
 
-<p>Create FW policy to block these applications:<p>
+<p>Creating the following reports:<p>
 <br>
 <form action="/report_apps" method="get">
 <table style="width: auto;" class="table table-bordered table-condensed table-hover table-striped">
   <tr>
     <th>Applications</th>
   </tr>
-{% for row in block_list %}
+{% for row in reports %}
   <tr>
 <!--   %for col in row: -->
     <td>{{ row }}</td>
@@ -27,14 +27,9 @@
 </table>
 
 <div> 
-<p>srx policy cli:</p>
+<p></p>
 </div> 
 
-<textarea class="form-control" type="text" rows="9" >
-  {{ policyhead }}
-  {% for i in block_list %}junos:{{i}} {% endfor %} 
-  {{ policytail }} 
-</textarea> 
 <br>
   <input value="Confirm" type="submit" />
 </form>

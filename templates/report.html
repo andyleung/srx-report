@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+
+<head>
+    <title>SRX Report</title>
+</head>
+
+<div class="container body-content">
+<h2>Generate Reports</h2>
+<body>
+
+<form action="/build_reports" method="post">
+<table style="width: 600px;" class="table table-bordered table-condensed table-hover table-striped">
+<!--  col in row: -->
+  <tr><th>All Applications</th><td><input type="checkbox" name="reports" value="report_apps" style="margin-right: 10px">Tabular </td><td><input type="checkbox" name="reports" value="app_bar" style="margin-right: 10px">Bar Chart</td><td><input type="checkbox" name="reports" value="app_pie" style="margin-right: 10px">Pie Chart</td></tr>
+  <tr><th>Web Applications</th><td><input type="checkbox" name="reports" value="http_apps" style="margin-right: 10px">Tabular </td><td><input type="checkbox" name="reports" value="web-applications-bar" style="margin-right: 10px">Bar Chart</td><td><input type="checkbox" name="reports" value="web-applications-pie" style="margin-right: 10px">Pie Chart</td></tr>
+  <tr><th>Application Groups</th><td><input type="checkbox" name="reports" value="application-groups-table" style="margin-right: 10px">Tabular </td><td><input type="checkbox" name="reports" value="app_groups" style="margin-right: 10px">Tree Chart</td><td><input type="checkbox" name="reports" value="app_bubble" style="margin-right: 10px">Bubble Chart</td></tr>
+  <tr><th>Characteristics</th><td><input type="checkbox" name="reports" value="application-characteristic-bar" style="margin-right: 10px">Bar Chart</td><td><input type="checkbox" name="reports" value="application-characteristic-pie" style="margin-right: 10px">Pie Chart</td><td></td></tr>
+  <tr><th>Categories</th><td><input type="checkbox" name="reports" value="application-categories-bar" style="margin-right: 10px">Bar Chart</td><td><input type="checkbox" name="reports" value="application-categories-pie" style="margin-right: 10px">Pie Chart</td><td></td></tr>
+  <tr><th>Subcategories</th><td><input type="checkbox" name="reports" value="application-subcategories-bar" style="margin-right: 10px">Bar Chart</td><td><input type="checkbox" name="reports" value="all-application-subcategories-pie" style="margin-right: 10px">Pie Chart</td><td></td></tr>
+</table>
+  <input value="Confirm" type="submit" />
+</form>
+</body>
+</div>
+
+{% endblock %}
