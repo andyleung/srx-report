@@ -2,3 +2,15 @@ env
 old
 view
 *.pyc
+
+# Cache objects
+packer_cache/
+
+# For built boxes
+*.box
+
+# Ignore Vagrant
+.vagrant/
+
+# Ignore OS Junk
+.DS_Store
