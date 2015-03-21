@@ -82,6 +82,8 @@
 5. Install wkhtmltopdf
 ----------------------
 
-6. To run:  %python app.py
+6. To run:  
 ------------------
-
+```sh
+%python app.py
+```
