@@ -3,16 +3,16 @@
 
 ### Mac: 
 ----------------
-'''sh
-% mongod &
-% python app.py
-'''
+```sh
+	$ mongod &
+	$ python app.py
+```
 
 ### Ubuntu: 
 ------------------
-'''sh
-% python app.py
-'''
+```sh
+	$ python app.py
+```
 
 ## Installation with Vagrant and VirtualBox
 -----------------
@@ -21,29 +21,28 @@
 3. git clone https://github.com/andyleung/srx-report
 4. vagrant up
 
-'''sh
-	% vagrant up
-	% vagrant ssh
+```sh
+	$ vagrant up
+	$ vagrant ssh
 	# cd /vagrant
 	# cd srx-report
 	# python app.py
-'''
-
+```
 
 ## Manually build all the python libraries
 1. Update ubuntu:
 -----------------
 
-'''sh 
+```sh 
 
 		$ sudo apt-get update
 		$ sudo apt-get install python-pip
-'''
+```
 
 2. Install Mongodb:
 -------------------
 
-'''sh 
+```sh 
 
 		$ sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 7F0CEB10
 
@@ -51,34 +50,34 @@
 
 		$ sudo apt-get update
 		$ sudo apt-get install -y mongodb-org
-''' 
+``` 
 
 3. Install Python Library:
 --------------------------
 
 
-'''sh 
+```sh 
 		$ sudo pip install pymongo
 		$ sudo pip install flask
 		$ sudo apt-get install git
-'''
+```
 
 4. A. Install Python lxml module:
 ---------------------------------
 
-'''sh
+```sh
 		$ sudo apt-get install libxml2-dev libxslt-dev python-dev
 		$ sudo pip install pycrypto
 		$ sudo apt-get install zlib1g-dev
 		$ sudo pip install lxml 
-'''
+```
 
 4. B. Build junos-eznc:
 -----------------------
 
-'''sh
+```sh
 		$ sudo pip install junos-eznc
-'''
+```
 
 5. Install wkhtmltopdf
 ----------------------
