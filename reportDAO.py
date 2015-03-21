@@ -62,7 +62,6 @@ class ReportDAO:
 
         # print "APP: ", appgroup_list
         # print "SESSIONS: ", sessions_list
-        print "Insert_Entry CAlled !"
 
         for app,session,byte,is_encrypted in zip(appgroup_list,sessions_list,kbyte_list,is_encrypted_list):
  
@@ -108,9 +107,9 @@ class ReportDAO:
         # print "kbyte_list: ", kbyte_list
 
         for app,session,byte in zip(appgroup_list,sessions_list,kbyte_list):
-            print "App Group: ",app.text
-            print "session Group: ",session.text
-            print "byte Group: ",byte.text
+            ##print "App Group: ",app.text
+            ##print "session Group: ",session.text
+            ##print "byte Group: ",byte.text
 
             entry = { "name": app.text,
                       "sessions": int(session.text),
