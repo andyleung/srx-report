@@ -20,12 +20,13 @@
 2. Install virtual box
 3. git clone https://github.com/andyleung/srx-report
 4. vagrant up
+
 '''sh
-% vagrant up
-% vagrant ssh
-% cd /vagrant
-% cd srx-report
-% python app.py
+	% vagrant up
+	% vagrant ssh
+	# cd /vagrant
+	# cd srx-report
+	# python app.py
 '''
 
 
