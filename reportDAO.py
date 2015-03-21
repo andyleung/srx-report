@@ -194,9 +194,9 @@ class ReportDAO:
                    node = (nodes[j],nodes[j+1])
                    leaves.append(node)
                    j=j+1
-        print "leaves: ", len(leaves) 
+        ##print "leaves: ", len(leaves) 
         links = list(set(leaves))
-        print "links: ", len(links), links
+        ####print "links: ", len(links), links
 
         name_to_node = {}
         root = {'name': 'Applications', 'children': []}
@@ -214,7 +214,7 @@ class ReportDAO:
                 # print "End> parent_node is: ", parent_node
                 # print "End> name_to_node is: ", name_to_node
 
-        print json.dumps(root, indent=4)
+        ##print json.dumps(root, indent=4)
         return json.dumps(root)
 
         
