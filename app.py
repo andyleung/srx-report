@@ -31,7 +31,7 @@ def read_device(hostname, username, passwd, code):
     if code == 'status': 
          print "Getting status ..."   
          apps = dev.rpc.get_appid_application_statistics()
-         apps_groups = dev.rpc.get_appid_application_group_statistics()
+         app_groups = dev.rpc.get_appid_application_group_statistics()
     elif code == 'signatures':
          print "Getting signatures ..."
          root = dev.rpc.get_appid_application_signature_detail(dev_timeout=600)
@@ -43,12 +43,19 @@ def read_device(hostname, username, passwd, code):
     print "Closing device ... "
     dev.close()
 
-    if database.report:
-         print "Data already exist. Clearing old data."
-         database.report.drop()
+    # if database.report:
+    #      print "Data Apps already exist. Clearing old data."
+    #      database.report.drop()
 
-    if report.insert_entry(apps):
-         print "Insert Successful!!"
+    # if report.insert_entry(apps):
+    #      print "Insert apps Successful!!"
+
+    if database.app_groups:
+         print "DB groups already exist. Clearing old data."
+         database.app_groups.drop()
+
+    if report.insert_groups(app_groups):
+         print "Insert app_groups Successful!!"
 
 # displays the initial form
 @app.route('/', methods=['GET','POST'])
@@ -127,6 +134,15 @@ def build():
       return render_template('build.html')
   return render_template('build.html')
 
+@app.route('/report_groups')
+def present_groups():
+    cursor = report.sort_by_groups()
+    sort_by_groups = []
+    for i in cursor:
+      #print i
+      sort_by_groups.append(i)    
+    return render_template('group_table.html',rows=sort_by_groups) 
+
 @app.route('/report_sessions')
 def present_sessions():
     cursor = report.sort_by_sessions()
@@ -192,10 +208,10 @@ def char_data():
 def app_bar(num=15):
     if request.method == 'POST':
            num = int(request.form['num'])
-           print "POST: Number of Apps: ", num
+           ##print "POST: Number of Apps: ", num
            return render_template('app_bar.html',app_num=num)
     else:
-       print "GET: Number of Apps "
+       ## print "GET: Number of Apps "
        return render_template('app_bar.html',app_num=num)
 
 
@@ -282,63 +298,64 @@ def http_apps():
 
 @app.route('/app_groups_data')
 def app_groups_data():
-    mydata2 = {
-    "name": "Root", 
-    "children": [
-        {
-            "name": "junos", 
-            "children": [
-                {
-                    "name": "infrastructure", 
-                    "children": [
-                        {
-                            "name": "directory"
-                        }, 
-                        {
-                            "name": "networking"
-                        }, 
-                        {
-                            "name": "encryption"
-                        }
-                    ]
-                }, 
-                {
-                    "name": "p2p", 
-                    "children": [
-                        {
-                            "name": "file-sharing"
-                        }
-                    ]
-                }, 
-                {
-                    "name": "remote-access", 
-                    "children": [
-                        {
-                            "name": "command"
-                        }
-                    ]
-                }, 
-                {
-                    "name": "web", 
-                    "children": [
-                        {
-                            "name": "social-networking", 
-                            "children": [
-                                {
-                                    "name": "facebook"
-                                }, 
-                                {
-                                    "name": "linkedin"
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
-    ]}
-
-    return json.dumps(mydata2)
+    mydata = report.group_tree()
+    return mydata
+    # mydata2 = {
+    # "name": "Root", 
+    # "children": [
+    #     {
+    #         "name": "junos", 
+    #         "children": [
+    #             {
+    #                 "name": "infrastructure", 
+    #                 "children": [
+    #                     {
+    #                         "name": "directory"
+    #                     }, 
+    #                     {
+    #                         "name": "networking"
+    #                     }, 
+    #                     {
+    #                         "name": "encryption"
+    #                     }
+    #                 ]
+    #             }, 
+    #             {
+    #                 "name": "p2p", 
+    #                 "children": [
+    #                     {
+    #                         "name": "file-sharing"
+    #                     }
+    #                 ]
+    #             }, 
+    #             {
+    #                 "name": "remote-access", 
+    #                 "children": [
+    #                     {
+    #                         "name": "command"
+    #                     }
+    #                 ]
+    #             }, 
+    #             {
+    #                 "name": "web", 
+    #                 "children": [
+    #                     {
+    #                         "name": "social-networking", 
+    #                         "children": [
+    #                             {
+    #                                 "name": "facebook"
+    #                             }, 
+    #                             {
+    #                                 "name": "linkedin"
+    #                             }
+    #                         ]
+    #                     }
+    #                 ]
+    #             }
+    #         ]
+    #     }
+    # ]}
+    ## return json.dumps(mydata)
 
 @app.route('/app_groups')
 def app_groups():
@@ -369,7 +386,7 @@ def report_pdf():
 def build_reports():
     reports = []
     reports = request.form.getlist('reports') 
-    print "Get: ", reports
+    ## print "Get: ", reports
     if reports:
        # for i in reports:
        #     LINK = "http://127.0.0.1:5000/"

@@ -21,6 +21,7 @@ __author__ = 'aleung'
 import sys
 import re
 import datetime
+import json
 
 
 """Normalize SRX app names
@@ -45,6 +46,7 @@ class ReportDAO:
         # else:
         #      print "Data does not exist. Building new table..."
         self.report = database.report
+        self.app_groups = database.app_groups
         self.signatures = database.signatures
 
     ## Get the rest of the attribute from db.signatures collection
@@ -58,12 +60,16 @@ class ReportDAO:
         kbyte_list = apps.findall('appid-application-statistics/bytes')
         is_encrypted_list = apps.findall('appid-application-statistics/is_encrypted')
 
+        # print "APP: ", appgroup_list
+        # print "SESSIONS: ", sessions_list
+        print "Insert_Entry CAlled !"
+
         for app,session,byte,is_encrypted in zip(appgroup_list,sessions_list,kbyte_list,is_encrypted_list):
  
             each_app = normalize(app.text)
             cursor = self.signatures.find_one({"type":each_app})
-            print "App: ", each_app
-            print "Cursor: ",cursor
+            ## print "App: ", each_app
+            ## print "Cursor: ",cursor
             risk = cursor['risk']
             category = cursor['category']
             subcategory = cursor['subcategory']
@@ -88,9 +94,42 @@ class ReportDAO:
             except:
                 print "Error inserting entry"
                 print "Unexpected error:", sys.exc_info()[0]
-
         return True
     
+    def insert_groups(self,app_group):        
+        last_reset_date = app_group[0][0].text
+        print last_reset_date
+        appgroup_list = app_group.findall('appid-application-group-statistics/application-name')
+        sessions_list = app_group.findall('appid-application-group-statistics/sessions')
+        kbyte_list = app_group.findall('appid-application-group-statistics/bytes')
+
+        # print "App Group List: ",appgroup_list
+        # print "sessions: ", sessions_list
+        # print "kbyte_list: ", kbyte_list
+
+        for app,session,byte in zip(appgroup_list,sessions_list,kbyte_list):
+            print "App Group: ",app.text
+            print "session Group: ",session.text
+            print "byte Group: ",byte.text
+
+            entry = { "name": app.text,
+                      "sessions": int(session.text),
+                      "bytes": int(byte.text)
+                        }
+            
+            # Now insert the post
+            try:
+                self.app_groups.insert(entry)
+                ## print "Insert successful ..."
+            except:
+                print "Error inserting entry"
+                print "Unexpected error:", sys.exc_info()[0]
+                return False
+        return True
+    
+    def sort_by_groups(self):
+        return self.app_groups.find({},{"_id":0,"name":1,"sessions":1,"bytes":1}).sort("name",1)
+
     def sort_by_kbytes(self):
         return self.report.find({},{"_id":0,"name":1,"sessions":1,"bytes":1,"risk":1,"category":1,"subcategory":1,"is_encrypted":1}).sort("bytes",-1)
 
@@ -141,6 +180,46 @@ class ReportDAO:
     def http_apps(self):
         cursor = self.report.find({'ports':{'$in':["SSL","HTTPS","HTTP"]}})
         return cursor
+
+    def group_tree(self):
+        cursor = self.app_groups.find({},{"_id":0,"name":1})
+        leaves = []
+        for i in cursor:
+            nodes = i['name'].split(':')
+            ## replace first element as junos:app
+            nodes.insert(0,nodes.pop(0)+':'+nodes.pop(0))
+            length = len(nodes)
+            if length>1 :
+                j = 0
+                while j+1 < length:
+                   node = (nodes[j],nodes[j+1])
+                   leaves.append(node)
+                   j=j+1
+        print "leaves: ", len(leaves) 
+        links = list(set(leaves))
+        print "links: ", len(links), links
+
+        name_to_node = {}
+        root = {'name': 'Applications', 'children': []}
+        for parent, child in links:
+                # print "Parent is: ", parent
+                # print "child is: ", child
+                parent_node = name_to_node.get(parent)
+                # print "Begin> parent_node is: ", parent_node
+                # print "Begin> name_to_node is: ", name_to_node
+                if not parent_node:
+                    name_to_node[parent] = parent_node = {'name': parent}
+                    root['children'].append(parent_node)
+                name_to_node[child] = child_node = {'name': child}
+                parent_node.setdefault('children', []).append(child_node)
+                # print "End> parent_node is: ", parent_node
+                # print "End> name_to_node is: ", name_to_node
+
+        print json.dumps(root, indent=4)
+        return json.dumps(root)
+
+        
+
         
 
         

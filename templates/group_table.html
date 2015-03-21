@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<head>
+    <title>Application Group Statistics</title>
+</head>
+
+<div class="container body-content">
+<h1>Application Group Statistics</h1>
+<body>
+
+<!-- Generate a HTML table from a list of tuples (or list of lists, or tuple of tuples or ...) -->
+
+<form action="/app_groups" method="get">
+<table style="width: auto;" class="table table-bordered table-condensed table-hover table-striped">
+  <tr>
+    <th>Application Groups</th><th>Sessions</th><th>KBytes</th>
+  </tr>
+{% for row in rows %}
+  <tr>
+<!--   %for col in row: -->
+    <th>{{row['name']}}</th><td>{{row['sessions']}}</td><td>{{row['bytes']}}</td>
+{% endfor %}
+  </tr>
+</table>
+  <input value="Flow Chart" type="submit" />
+</form>
+</body>
+</div>
+
+{% endblock %}

@@ -7,6 +7,7 @@ def build_report():
    LINK = "http://localhost:5000/"
    call(["/usr/local/bin/wkhtmltopdf",LINK+"report_apps","report/all_apps.pdf"])
    call(["/usr/local/bin/wkhtmltopdf",LINK+"http_apps","report/http_apps.pdf"])
+   call(["/usr/local/bin/wkhtmltopdf",LINK+"report_groups","report/report_groups.pdf"])
    call(["/usr/local/bin/wkhtmltopdf",LINK+"app_groups","report/app_groups.pdf"])
    call(["/usr/local/bin/wkhtmltopdf",LINK+"app_bar","report/app_bar.pdf"])
    call(["/usr/local/bin/wkhtmltopdf",LINK+"app_pie","report/app_pie.pdf"])
