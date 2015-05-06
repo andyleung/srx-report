@@ -236,7 +236,8 @@ def data():
         ##print "count: ",i['count'],"id: ",i['_id'],"groups: ",i['category']
         RESULTS['children'].append({
                 'name': i['_id'],
-                'value': log(i['count']),
+                'value': i['count'],
+                ##'value': log(i['count']),
                 'group': i['main_group'][0]
         })
     #print RESULTS

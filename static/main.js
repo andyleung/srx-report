@@ -1,9 +1,11 @@
-// custom javascript
+// custom javascript to build bubble graph
 
-$(function() {
-  console.log('jquery is working!')
-  createGraph();
-});
+// $(function() {
+//   console.log('jquery is working!')
+//   createGraph();
+// });
+
+createGraph();
 
 function createGraph() {
 
@@ -12,14 +14,16 @@ function createGraph() {
   var height = 960; // chart height
   var format = d3.format(",d");  // convert value to integer
   var color = d3.scale.category20b();  // create ordial scale with 20 colors
-  var sizeOfRadius = d3.scale.pow().domain([-100,100]).range([-50,50]);  // https://github.com/mbostock/d3/wiki/Quantitative-Scales#pow
+  var sizeOfRadius = d3.scale.sqrt().domain([-100,100]).range([-50,50]);  
+  // var sizeOfRadius = d3.scale.pow().domain([-100,100]).range([-50,50]);  
+  // https://github.com/mbostock/d3/wiki/Quantitative-Scales#pow
 
   // bubble config
   var bubble = d3.layout.pack()
     .sort(null)  // disable sorting, use DOM tree traversal
     .size([width, height])  // chart layout size
     .padding(1)  // padding between circles
-   // .radius(function(d) { return 10 + (sizeOfRadius(d) * 5); });  // radius for each circle
+    .radius(function(d) { return 15 + 0.001 * sizeOfRadius(d) });  // radius for each circle
 
   // svg config
   var svg = d3.select("#chart").append("svg") // append to DOM
@@ -54,7 +58,7 @@ function createGraph() {
     .style('fill', function(d) { return color(d.name); })
 
     .on("mouseover", function(d) {
-      tooltip.text(d.group);
+      tooltip.text(d.name + ' Vol: ' + d.value);
       tooltip.style("visibility", "visible");
     })
     .on("mousemove", function() {
@@ -62,10 +66,11 @@ function createGraph() {
     })
     .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
 
-    node.append('text')
+  node.append('text')
       .attr("dy", ".3em")
       .style('text-anchor', 'middle')
-      .text(function(d) { return d.name; });
+      .text(function(d) {return d.name.substring(0, d.r /3);});
+      // .text(function(d) { return d.name; });
 
   });
 
