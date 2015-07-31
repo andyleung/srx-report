@@ -43,12 +43,12 @@ def read_device(hostname, username, passwd, code):
     print "Closing device ... "
     dev.close()
 
-    # if database.report:
-    #      print "Data Apps already exist. Clearing old data."
-    #      database.report.drop()
+    if database.report:
+          print "Data Apps already exist. Clearing old data."
+          database.report.drop()
 
-    # if report.insert_entry(apps):
-    #      print "Insert apps Successful!!"
+     if report.insert_entry(apps):
+          print "Insert apps Successful!!"
 
     if database.app_groups:
          print "DB groups already exist. Clearing old data."
