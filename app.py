@@ -47,7 +47,7 @@ def read_device(hostname, username, passwd, code):
           print "Data Apps already exist. Clearing old data."
           database.report.drop()
 
-     if report.insert_entry(apps):
+    if report.insert_entry(apps):
           print "Insert apps Successful!!"
 
     if database.app_groups:
