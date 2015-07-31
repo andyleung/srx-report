@@ -1,14 +1,16 @@
 
 # RUN 
 
-### Mac: 
+### I have created 2 branches: Master and Ubuntu 
+
+### Use the Master branch for Macbook: 
 ----------------
 ```sh
 	$ mongod &
 	$ python app.py
 ```
 
-### Ubuntu: 
+### Please use the ubuntu branch for Ubuntu: 
 ------------------
 ```sh
 	$ python app.py
