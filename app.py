@@ -43,12 +43,12 @@ def read_device(hostname, username, passwd, code):
     print "Closing device ... "
     dev.close()
 
-    # if database.report:
-    #      print "Data Apps already exist. Clearing old data."
-    #      database.report.drop()
+    if database.report:
+          print "Data Apps already exist. Clearing old data."
+          database.report.drop()
 
-    # if report.insert_entry(apps):
-    #      print "Insert apps Successful!!"
+    if report.insert_entry(apps):
+          print "Insert apps Successful!!"
 
     if database.app_groups:
          print "DB groups already exist. Clearing old data."
@@ -182,11 +182,12 @@ def present_risks():
 
 @app.route('/char_bar')
 def char_bar():
-    cursor = report.sort_by_characteristic()
-    #print "Cursor: " , cursor
-    sort_by_characteristic = []
-    for i in cursor['result']:
-         sort_by_characteristic.append(i)
+    #  cursor = report.sort_by_characteristic()
+    cursor = list(report.sort_by_characteristic())
+    #  print "Cursor: " , cursor
+    #  sort_by_characteristic = []
+    # for i in cursor['result']:
+    #     sort_by_characteristic.append(i)
     #print 'json: ',jsonify(sort_by_characteristic)
     return render_template('char_bar.html')
 
@@ -196,12 +197,14 @@ def char_pie():
 
 @app.route('/char_data')
 def char_data():
-    cursor = report.sort_by_characteristic()
-    sort_by_characteristic = []
-    for i in cursor['result']:
-         sort_by_characteristic.append(i)
+    #cursor = report.sort_by_characteristic()
+    #sort_by_characteristic = []
+    #for i in cursor['result']:
+    #     sort_by_characteristic.append(i)
     #print sort_by_characteristic
-    return json.dumps(sort_by_characteristic)
+    #return json.dumps(sort_by_characteristic)
+    cursor = list(report.sort_by_characteristic())
+    return json.dumps(cursor)
 
 @app.route('/app_bar',methods=['POST','GET'])
 @app.route('/app_bar/<int:num>')
@@ -221,17 +224,21 @@ def app_pie():
 
 @app.route('/app_data/<int:limit>')
 def app_data(limit):
-    cursor = report.group_apps(limit)
-    sort_by_apps = []
-    for i in cursor['result']:
-         sort_by_apps.append(i)
-    return json.dumps(sort_by_apps)
+    cursor = list(report.group_apps(limit))
+    print "Cursor: ", cursor
+    # sort_by_apps = []
+    # for i in cursor['result']:
+    #      sort_by_apps.append(i)
+    # return json.dumps(sort_by_apps)
+    return json.dumps(cursor)
 
 @app.route("/data")
 def data():
     RESULTS = {'children': []}
-    cursor = report.bubble_apps()
-    for i in cursor['result']:
+    ## cursor = report.bubble_apps()
+    ##for i in cursor['result']:
+    cursor = list(report.bubble_apps())
+    for i in cursor:
         ##print i
         ##print "count: ",i['count'],"id: ",i['_id'],"groups: ",i['category']
         RESULTS['children'].append({
@@ -258,12 +265,14 @@ def category_pie():
 
 @app.route('/category_data')
 def category_data():
-    cursor = report.sort_by_category()
-    sort_by_category = []
-    for i in cursor['result']:
-         sort_by_category.append(i)
+    ## cursor = report.sort_by_category()
+    ## sort_by_category = []
+    ## for i in cursor['result']:
+    ##    sort_by_category.append(i)
     ##print sort_by_category
-    return json.dumps(sort_by_category)
+    ## return json.dumps(sort_by_category)
+    cursor = list(report.sort_by_category())
+    return json.dumps(cursor)
 
 @app.route("/subcategory_bar")
 def subcategory_bar():
@@ -275,12 +284,14 @@ def subcategory_pie():
 
 @app.route('/subcategory_data')
 def subcategory_data():
-    cursor = report.sort_by_subcategory()
-    sort_by_subcategory = []
-    for i in cursor['result']:
-         sort_by_subcategory.append(i)
+    #cursor = report.sort_by_subcategory()
+    #sort_by_subcategory = []
+    #for i in cursor['result']:
+    #     sort_by_subcategory.append(i)
     ##print sort_by_subcategory
-    return json.dumps(sort_by_subcategory)
+    #return json.dumps(sort_by_subcategory)
+    cursor = list(report.sort_by_subcategory())
+    return json.dumps(cursor)
 
 @app.route('/http_apps')
 def http_apps():
@@ -399,6 +410,6 @@ def build_reports():
 if __name__ == '__main__':
 	app.run(
            host='0.0.0.0',
-           port=5000,
+           port=5001,
            debug=True)
 
