@@ -1,14 +1,14 @@
 
 # RUN 
 
-### Mac: 
+### Mac: %git clone http://www.github.com/andyleung/srx-report
 ----------------
 ```sh
 	$ mongod &
 	$ python app.py
 ```
 
-### Ubuntu: 
+### Ubuntu: %git clone -b ubuntu http://www.github.com/andyleung/srx-report 
 ------------------
 ```sh
 	$ python app.py
